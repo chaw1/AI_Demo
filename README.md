@@ -10,6 +10,7 @@ CustomerServiceAgent, ListingOptimizerAgent, ReviewAnalysisAgent and CompetitorM
 - Endpoint `POST /api/listing_optimizer` returns optimized title data
 - Endpoint `POST /api/review_analysis` returns a review summary
 
+
 ### Running
 ```bash
 pip install -r backend/requirements.txt
@@ -20,6 +21,7 @@ The backend also serves the Vue3 frontend.
 ## Frontend
 - Vue3 app (`frontend/index.html`) provides four tabs matching the agents
 - Each tab sends a request to the corresponding API and shows the JSON reply
+
 
 Open `http://127.0.0.1:8000` after starting the backend to use the demo.
 

@@ -9,6 +9,7 @@ from agents.customer_service import CustomerServiceAgent
 from agents.listing_optimizer import ListingOptimizerAgent
 from agents.review_analysis import ReviewAnalysisAgent
 
+
 app = FastAPI(title="Amazon Intelligence Demo")
 
 frontend_path = Path(__file__).resolve().parent.parent / 'frontend'
@@ -18,11 +19,12 @@ app.mount('/static', StaticFiles(directory=frontend_path, html=True), name='stat
 @app.get('/')
 def index():
     return FileResponse(frontend_path / 'index.html')
-
+  
 competitor_agent = CompetitorMonitorAgent()
 customer_agent = CustomerServiceAgent()
 optimizer_agent = ListingOptimizerAgent()
 review_agent = ReviewAnalysisAgent()
+
 
 class ScrapeResponse(BaseModel):
     title: str | None = None
@@ -81,3 +83,4 @@ def listing_optimizer(req: OptimizeRequest):
 def review_analysis(req: ReviewRequest):
     summary = review_agent.summarize(req.reviews)
     return summary
+
