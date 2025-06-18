@@ -4,10 +4,10 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from pathlib import Path
 
-from agents.competitor_monitor import CompetitorMonitorAgent
-from agents.customer_service import CustomerServiceAgent
-from agents.listing_optimizer import ListingOptimizerAgent
-from agents.review_analysis import ReviewAnalysisAgent
+from .agents.competitor_monitor import CompetitorMonitorAgent
+from .agents.customer_service import CustomerServiceAgent
+from .agents.listing_optimizer import ListingOptimizerAgent
+from .agents.review_analysis import ReviewAnalysisAgent
 
 
 app = FastAPI(title="Amazon Intelligence Demo")
