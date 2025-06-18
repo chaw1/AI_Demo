@@ -1,11 +1,15 @@
 # AI Demo Project
 
-This repository contains a minimal demonstration of an Amazon intelligence toolkit. The main feature allows entering an Amazon ASIN or product URL and quickly returning structured listing information.
+This repository contains a minimal demonstration of an Amazon intelligence toolkit. It exposes four mock services representing the project agents:
+CustomerServiceAgent, ListingOptimizerAgent, ReviewAnalysisAgent and CompetitorMonitorAgent. The Competitor Monitor feature accepts an ASIN or URL and returns structured listing information.
 
 ## Backend
 - Python `FastAPI` server located in `backend/`
-- Endpoint `GET /api/scrape` accepts `asin` or `url` query parameters
-- A mock `CompetitorMonitorAgent` parses a sample HTML file and returns listing data
+- Endpoint `GET /api/scrape` returns mock listing data
+- Endpoint `POST /api/customer_service` returns a simple reply
+- Endpoint `POST /api/listing_optimizer` returns optimized title data
+- Endpoint `POST /api/review_analysis` returns a review summary
+
 
 ### Running
 ```bash
@@ -15,8 +19,9 @@ uvicorn backend.main:app --reload
 The backend also serves the Vue3 frontend.
 
 ## Frontend
-- Minimal Vue3 app (`frontend/index.html`)
-- Allows input of ASIN or URL and displays JSON response
+- Vue3 app (`frontend/index.html`) provides four tabs matching the agents
+- Each tab sends a request to the corresponding API and shows the JSON reply
+
 
 Open `http://127.0.0.1:8000` after starting the backend to use the demo.
 

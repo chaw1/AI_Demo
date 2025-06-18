@@ -4,28 +4,93 @@
     <meta charset="utf-8">
     <title>Amazon Intelligence Demo</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        button.active { font-weight: bold; }
+        textarea { width: 300px; height: 80px; }
+    </style>
 </head>
 <body>
 <div id="app">
-    <h1>Amazon Listing Scraper</h1>
-    <input v-model="input" placeholder="Enter ASIN or URL" />
-    <button @click="scrape">\u91c7\u96c6</button>
-    <pre>{{ result }}</pre>
+    <h1>Amazon Intelligence Demo</h1>
+    <div>
+        <button v-for="t in tabs" :key="t" :class="{active: active===t}" @click="active=t">{{ t }}</button>
+    </div>
+
+    <div v-if="active==='Competitor Monitor'">
+        <input v-model="compInput" placeholder="Enter ASIN or URL" />
+        <button @click="scrape">采集</button>
+        <pre>{{ result }}</pre>
+    </div>
+
+    <div v-if="active==='Review Analysis'">
+        <textarea v-model="reviewInput" placeholder="One review per line"></textarea>
+        <button @click="analyzeReview">分析</button>
+        <pre>{{ reviewResult }}</pre>
+    </div>
+
+    <div v-if="active==='Listing Optimizer'">
+        <input v-model="listingTitle" placeholder="Listing Title" />
+        <button @click="optimizeListing">优化</button>
+        <pre>{{ optimizeResult }}</pre>
+    </div>
+
+    <div v-if="active==='Customer Service'">
+        <input v-model="question" placeholder="Customer question" />
+        <button @click="askService">回复</button>
+        <pre>{{ serviceResult }}</pre>
+    </div>
 </div>
 <script>
 const { createApp } = Vue;
 createApp({
-    data() { return { input: '', result: {} }; },
+    data() {
+        return {
+            tabs: ['Competitor Monitor','Review Analysis','Listing Optimizer','Customer Service'],
+            active: 'Competitor Monitor',
+            compInput: '',
+            reviewInput: '',
+            listingTitle: '',
+            question: '',
+            result: {},
+            reviewResult: {},
+            optimizeResult: {},
+            serviceResult: {}
+        };
+    },
     methods: {
         async scrape() {
             const params = new URLSearchParams();
-            if (this.input.startsWith('http')) {
-                params.append('url', this.input);
+            if (this.compInput.startsWith('http')) {
+                params.append('url', this.compInput);
             } else {
-                params.append('asin', this.input);
+                params.append('asin', this.compInput);
             }
             const res = await fetch('/api/scrape?' + params.toString());
             this.result = await res.json();
+        },
+        async analyzeReview() {
+            const res = await fetch('/api/review_analysis', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({reviews: this.reviewInput.split('\n').filter(Boolean)})
+            });
+            this.reviewResult = await res.json();
+        },
+        async optimizeListing() {
+            const res = await fetch('/api/listing_optimizer', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({title: this.listingTitle})
+            });
+            this.optimizeResult = await res.json();
+        },
+        async askService() {
+            const res = await fetch('/api/customer_service', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({question: this.question})
+            });
+            this.serviceResult = await res.json();
         }
     }
 }).mount('#app');
