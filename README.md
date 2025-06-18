@@ -20,6 +20,7 @@ The backend also serves the Vue3 frontend.
 
 ## Frontend
 - Vue3 app (`frontend/index.html`) provides four tabs matching the agents
+- Basic styling is provided using the Bootstrap 5 CDN
 - Each tab sends a request to the corresponding API and shows the JSON reply
 
 

@@ -4,40 +4,48 @@
     <meta charset="utf-8">
     <title>Amazon Intelligence Demo</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <style>
-        button.active { font-weight: bold; }
-        textarea { width: 300px; height: 80px; }
+        textarea { width: 100%; height: 120px; }
     </style>
 </head>
-<body>
-<div id="app">
-    <h1>Amazon Intelligence Demo</h1>
-    <div>
-        <button v-for="t in tabs" :key="t" :class="{active: active===t}" @click="active=t">{{ t }}</button>
+<body class="bg-light">
+<div id="app" class="container py-4">
+    <h1 class="mb-4">Amazon Intelligence Demo</h1>
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item" v-for="t in tabs" :key="t">
+            <button class="nav-link" :class="{active: active===t}" @click="active=t">{{ t }}</button>
+        </li>
+    </ul>
+
+    <div v-if="active==='Competitor Monitor'" class="mb-3">
+        <div class="input-group mb-2">
+            <input v-model="compInput" placeholder="Enter ASIN or URL" class="form-control" />
+            <button @click="scrape" class="btn btn-primary">采集</button>
+        </div>
+        <pre class="bg-white p-3 border rounded">{{ result }}</pre>
     </div>
 
-    <div v-if="active==='Competitor Monitor'">
-        <input v-model="compInput" placeholder="Enter ASIN or URL" />
-        <button @click="scrape">采集</button>
-        <pre>{{ result }}</pre>
+    <div v-if="active==='Review Analysis'" class="mb-3">
+        <textarea v-model="reviewInput" placeholder="One review per line" class="form-control mb-2"></textarea>
+        <button @click="analyzeReview" class="btn btn-primary mb-2">分析</button>
+        <pre class="bg-white p-3 border rounded">{{ reviewResult }}</pre>
     </div>
 
-    <div v-if="active==='Review Analysis'">
-        <textarea v-model="reviewInput" placeholder="One review per line"></textarea>
-        <button @click="analyzeReview">分析</button>
-        <pre>{{ reviewResult }}</pre>
+    <div v-if="active==='Listing Optimizer'" class="mb-3">
+        <div class="input-group mb-2">
+            <input v-model="listingTitle" placeholder="Listing Title" class="form-control" />
+            <button @click="optimizeListing" class="btn btn-primary">优化</button>
+        </div>
+        <pre class="bg-white p-3 border rounded">{{ optimizeResult }}</pre>
     </div>
 
-    <div v-if="active==='Listing Optimizer'">
-        <input v-model="listingTitle" placeholder="Listing Title" />
-        <button @click="optimizeListing">优化</button>
-        <pre>{{ optimizeResult }}</pre>
-    </div>
-
-    <div v-if="active==='Customer Service'">
-        <input v-model="question" placeholder="Customer question" />
-        <button @click="askService">回复</button>
-        <pre>{{ serviceResult }}</pre>
+    <div v-if="active==='Customer Service'" class="mb-3">
+        <div class="input-group mb-2">
+            <input v-model="question" placeholder="Customer question" class="form-control" />
+            <button @click="askService" class="btn btn-primary">回复</button>
+        </div>
+        <pre class="bg-white p-3 border rounded">{{ serviceResult }}</pre>
     </div>
 </div>
 <script>
