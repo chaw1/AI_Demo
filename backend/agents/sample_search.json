@@ -1,0 +1,7 @@
+{
+  "organic_results": [
+    {"asin": "B000111", "title": "Sample Product A", "price": {"value": 19.99}, "rating": 4.5, "reviews": 120, "brand": "BrandA", "thumbnail": "imageA.jpg", "is_prime": true, "position": 1},
+    {"asin": "B000222", "title": "Sample Product B", "price": {"value": 25.50}, "rating": 4.0, "reviews": 90, "brand": "BrandB", "thumbnail": "imageB.jpg", "is_prime": false, "position": 2},
+    {"asin": "B000333", "title": "Sample Product C", "price": {"value": 15.00}, "rating": 3.8, "reviews": 50, "brand": "BrandA", "thumbnail": "imageC.jpg", "is_prime": true, "position": 3}
+  ]
+}
