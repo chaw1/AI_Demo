@@ -1,6 +1,7 @@
 from __future__ import annotations
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
+import os
 import re
 from pathlib import Path
 
@@ -17,6 +18,9 @@ class CompetitorMonitorAgent:
     """Mock agent to fetch Amazon listing information."""
 
     sample_file = Path(__file__).resolve().parent / "sample_listing.html"
+
+    def __init__(self, serpapi_key: str | None = None) -> None:
+        self.serpapi_key = serpapi_key or os.getenv("SERPAPI_KEY")
 
     def fetch_competitor_data(self, asin_or_url: str) -> ListingData:
         """Fetch listing data. Currently reads from a sample HTML file."""

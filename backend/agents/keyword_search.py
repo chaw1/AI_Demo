@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
@@ -24,6 +25,9 @@ class AmazonScraper:
     """Fetch Amazon search results. Uses a local JSON sample for the demo."""
 
     sample_file = Path(__file__).resolve().parent / "sample_search.json"
+
+    def __init__(self, serpapi_key: str | None = None) -> None:
+        self.serpapi_key = serpapi_key or os.getenv("SERPAPI_KEY")
 
     def search_products(self, keyword: str, marketplace: str = "amazon.de") -> List[SearchResult]:
         """Return a list of SearchResult objects."""
@@ -55,6 +59,9 @@ class AmazonScraper:
 
 class AIAnalyzer:
     """Mock analyzer that aggregates basic statistics from search results."""
+
+    def __init__(self, openai_key: str | None = None) -> None:
+        self.openai_key = openai_key or os.getenv("OPENAI_KEY")
 
     def analyze_listings(self, products: List[SearchResult]) -> Dict[str, Any]:
         if not products:
