@@ -27,6 +27,6 @@ The backend also serves the Vue3 frontend.
 
 Open `http://127.0.0.1:8000` after starting the backend to use the demo.
 
-Select the **Keyword Search** tab to input a term and view the analysis JSON.
+Select the **Keyword Search** tab to input a term and view the charts of product prices and brand distribution. A "Toggle JSON" button is available to inspect the raw response.
 
 *Note*: Due to environment restrictions, the demo uses a static sample HTML file instead of live Amazon requests.

@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <title>Amazon Intelligence Demo</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <style>
         textarea { width: 100%; height: 120px; }
+        canvas { max-width: 100%; }
     </style>
 </head>
 <body class="bg-light">
@@ -31,7 +33,14 @@
             <input v-model="keywordInput" placeholder="Enter keyword" class="form-control" />
             <button @click="analyzeKeyword" class="btn btn-primary">分析</button>
         </div>
-        <pre class="bg-white p-3 border rounded">{{ keywordResult }}</pre>
+        <div class="mb-4">
+            <canvas id="priceChart" height="120"></canvas>
+        </div>
+        <div class="mb-4">
+            <canvas id="brandChart" height="120"></canvas>
+        </div>
+        <button class="btn btn-secondary btn-sm mb-2" @click="showJson=!showJson">Toggle JSON</button>
+        <pre v-if="showJson" class="bg-white p-3 border rounded">{{ keywordResult }}</pre>
     </div>
 
     <div v-if="active==='Review Analysis'" class="mb-3">
@@ -72,7 +81,10 @@ createApp({
             keywordResult: {},
             reviewResult: {},
             optimizeResult: {},
-            serviceResult: {}
+            serviceResult: {},
+            showJson: false,
+            priceChart: null,
+            brandChart: null
         };
     },
     methods: {
@@ -93,6 +105,8 @@ createApp({
                 body: JSON.stringify({keyword: this.keywordInput})
             });
             this.keywordResult = await res.json();
+            await this.$nextTick();
+            this.renderCharts();
         },
         async analyzeReview() {
             const res = await fetch('/api/review_analysis', {
@@ -117,6 +131,33 @@ createApp({
                 body: JSON.stringify({question: this.question})
             });
             this.serviceResult = await res.json();
+        },
+        renderCharts() {
+            if (!this.keywordResult.products) return;
+            const labels = this.keywordResult.products.map(p => p.title || p.asin);
+            const prices = this.keywordResult.products.map(p => p.price);
+            const brandCount = {};
+            this.keywordResult.products.forEach(p => {
+                if (p.brand) brandCount[p.brand] = (brandCount[p.brand] || 0) + 1;
+            });
+            const brandLabels = Object.keys(brandCount);
+            const brandValues = Object.values(brandCount);
+
+            if (this.priceChart) this.priceChart.destroy();
+            if (this.brandChart) this.brandChart.destroy();
+
+            const priceCtx = document.getElementById('priceChart');
+            this.priceChart = new Chart(priceCtx, {
+                type: 'bar',
+                data: { labels, datasets: [{ label: 'Price', data: prices, backgroundColor: 'rgba(54, 162, 235, 0.5)' }] },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+
+            const brandCtx = document.getElementById('brandChart');
+            this.brandChart = new Chart(brandCtx, {
+                type: 'pie',
+                data: { labels: brandLabels, datasets: [{ data: brandValues, backgroundColor: brandLabels.map(() => 'rgba(255, 99, 132, 0.5)') }] },
+            });
         }
     }
 }).mount('#app');
