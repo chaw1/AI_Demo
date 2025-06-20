@@ -26,6 +26,14 @@
         <pre class="bg-white p-3 border rounded">{{ result }}</pre>
     </div>
 
+    <div v-if="active==='Keyword Search'" class="mb-3">
+        <div class="input-group mb-2">
+            <input v-model="keywordInput" placeholder="Enter keyword" class="form-control" />
+            <button @click="analyzeKeyword" class="btn btn-primary">分析</button>
+        </div>
+        <pre class="bg-white p-3 border rounded">{{ keywordResult }}</pre>
+    </div>
+
     <div v-if="active==='Review Analysis'" class="mb-3">
         <textarea v-model="reviewInput" placeholder="One review per line" class="form-control mb-2"></textarea>
         <button @click="analyzeReview" class="btn btn-primary mb-2">分析</button>
@@ -53,13 +61,15 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            tabs: ['Competitor Monitor','Review Analysis','Listing Optimizer','Customer Service'],
+            tabs: ['Competitor Monitor','Keyword Search','Review Analysis','Listing Optimizer','Customer Service'],
             active: 'Competitor Monitor',
             compInput: '',
+            keywordInput: '',
             reviewInput: '',
             listingTitle: '',
             question: '',
             result: {},
+            keywordResult: {},
             reviewResult: {},
             optimizeResult: {},
             serviceResult: {}
@@ -75,6 +85,14 @@ createApp({
             }
             const res = await fetch('/api/scrape?' + params.toString());
             this.result = await res.json();
+        },
+        async analyzeKeyword() {
+            const res = await fetch('/api/analyze_keyword', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({keyword: this.keywordInput})
+            });
+            this.keywordResult = await res.json();
         },
         async analyzeReview() {
             const res = await fetch('/api/review_analysis', {

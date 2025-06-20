@@ -8,6 +8,7 @@ from .agents.competitor_monitor import CompetitorMonitorAgent
 from .agents.customer_service import CustomerServiceAgent
 from .agents.listing_optimizer import ListingOptimizerAgent
 from .agents.review_analysis import ReviewAnalysisAgent
+from .agents.keyword_search import AmazonScraper, AIAnalyzer
 
 
 app = FastAPI(title="Amazon Intelligence Demo")
@@ -24,6 +25,8 @@ competitor_agent = CompetitorMonitorAgent()
 customer_agent = CustomerServiceAgent()
 optimizer_agent = ListingOptimizerAgent()
 review_agent = ReviewAnalysisAgent()
+keyword_scraper = AmazonScraper()
+ai_analyzer = AIAnalyzer()
 
 
 class ScrapeResponse(BaseModel):
@@ -56,6 +59,13 @@ class ReviewResponse(BaseModel):
     sentiment: str
     top_words: list[str]
 
+class KeywordRequest(BaseModel):
+    keyword: str
+
+class KeywordResponse(BaseModel):
+    products: list[dict]
+    analysis: dict
+
 @app.get("/api/scrape", response_model=ScrapeResponse)
 def scrape(asin: str = Query(None), url: str = Query(None)):
     if not asin and not url:
@@ -83,4 +93,13 @@ def listing_optimizer(req: OptimizeRequest):
 def review_analysis(req: ReviewRequest):
     summary = review_agent.summarize(req.reviews)
     return summary
+
+
+@app.post("/api/analyze_keyword", response_model=KeywordResponse)
+def analyze_keyword(req: KeywordRequest):
+    products_objs = keyword_scraper.search_products(req.keyword)
+    # convert dataclasses to dicts
+    products = [p.__dict__ for p in products_objs]
+    analysis = ai_analyzer.analyze_listings(products_objs)
+    return {"products": products, "analysis": analysis}
 
