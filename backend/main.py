@@ -22,6 +22,7 @@ app.mount('/static', StaticFiles(directory=frontend_path, html=True), name='stat
 def index():
     return FileResponse(frontend_path / 'index.html')
   
+
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 
