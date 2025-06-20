@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import os
 
 @dataclass
 class OptimizationResult:
@@ -8,6 +9,9 @@ class OptimizationResult:
 
 class ListingOptimizerAgent:
     """Mock listing optimizer."""
+
+    def __init__(self, openai_key: str | None = None) -> None:
+        self.openai_key = openai_key or os.getenv("OPENAI_KEY")
 
     def optimize_listing(self, title: str) -> OptimizationResult:
         improved = title + " (Optimized)"

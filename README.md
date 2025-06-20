@@ -19,6 +19,14 @@ uvicorn backend.main:app --reload
 ```
 The backend also serves the Vue3 frontend.
 
+## Configuration
+Set the following environment variables before running the server:
+
+- `SERPAPI_KEY` – API key for SerpAPI used by the keyword search agent.
+- `OPENAI_KEY` – API key for OpenAI-based agents.
+
+If a variable is not provided the corresponding agent remains in demo mode.
+
 ## Frontend
 - Vue3 app (`frontend/index.html`) provides tabs matching the agents including a keyword search interface
 - Basic styling is provided using the Bootstrap 5 CDN
@@ -27,6 +35,6 @@ The backend also serves the Vue3 frontend.
 
 Open `http://127.0.0.1:8000` after starting the backend to use the demo.
 
-Select the **Keyword Search** tab to input a term and view the analysis JSON.
+Select the **Keyword Search** tab to input a term and view the charts of product prices and brand distribution. A "Toggle JSON" button is available to inspect the raw response.
 
 *Note*: Due to environment restrictions, the demo uses a static sample HTML file instead of live Amazon requests.
