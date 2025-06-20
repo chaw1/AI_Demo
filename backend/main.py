@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from pathlib import Path
+import os
 
 from .agents.competitor_monitor import CompetitorMonitorAgent
 from .agents.customer_service import CustomerServiceAgent
@@ -21,12 +22,15 @@ app.mount('/static', StaticFiles(directory=frontend_path, html=True), name='stat
 def index():
     return FileResponse(frontend_path / 'index.html')
   
-competitor_agent = CompetitorMonitorAgent()
-customer_agent = CustomerServiceAgent()
-optimizer_agent = ListingOptimizerAgent()
-review_agent = ReviewAnalysisAgent()
-keyword_scraper = AmazonScraper()
-ai_analyzer = AIAnalyzer()
+SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+OPENAI_KEY = os.getenv("OPENAI_KEY")
+
+competitor_agent = CompetitorMonitorAgent(serpapi_key=SERPAPI_KEY)
+customer_agent = CustomerServiceAgent(openai_key=OPENAI_KEY)
+optimizer_agent = ListingOptimizerAgent(openai_key=OPENAI_KEY)
+review_agent = ReviewAnalysisAgent(openai_key=OPENAI_KEY)
+keyword_scraper = AmazonScraper(serpapi_key=SERPAPI_KEY)
+ai_analyzer = AIAnalyzer(openai_key=OPENAI_KEY)
 
 
 class ScrapeResponse(BaseModel):
