@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
 from typing import List, Dict, Any
+import requests
 
 
 @dataclass
@@ -21,16 +22,37 @@ class SearchResult:
 
 
 class AmazonScraper:
-    """Fetch Amazon search results. Uses a local JSON sample for the demo."""
+    """Fetch Amazon search results using SerpAPI or a local sample file."""
 
     sample_file = Path(__file__).resolve().parent / "sample_search.json"
 
+    def __init__(self, api_key: str | None = None) -> None:
+        self.api_key = api_key
+
+    def _load_sample(self) -> dict:
+        try:
+            return json.loads(self.sample_file.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            return {}
+
     def search_products(self, keyword: str, marketplace: str = "amazon.de") -> List[SearchResult]:
         """Return a list of SearchResult objects."""
-        try:
-            data = json.loads(self.sample_file.read_text(encoding="utf-8"))
-        except FileNotFoundError:
-            return []
+        data: dict = {}
+        if self.api_key:
+            params = {
+                "engine": "amazon",
+                "amazon_domain": marketplace,
+                "q": keyword,
+                "api_key": self.api_key,
+            }
+            try:
+                resp = requests.get("https://serpapi.com/search.json", params=params, timeout=10)
+                resp.raise_for_status()
+                data = resp.json()
+            except Exception:
+                data = self._load_sample()
+        else:
+            data = self._load_sample()
 
         products: List[SearchResult] = []
         for item in data.get("organic_results", []):

@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from pathlib import Path
+import os
 
 from .agents.competitor_monitor import CompetitorMonitorAgent
 from .agents.customer_service import CustomerServiceAgent
@@ -25,7 +26,8 @@ competitor_agent = CompetitorMonitorAgent()
 customer_agent = CustomerServiceAgent()
 optimizer_agent = ListingOptimizerAgent()
 review_agent = ReviewAnalysisAgent()
-keyword_scraper = AmazonScraper()
+SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+keyword_scraper = AmazonScraper(api_key=SERPAPI_KEY)
 ai_analyzer = AIAnalyzer()
 
 
